@@ -2,7 +2,7 @@ version: 1
 datastore:
   filename: /data/processing/processing.json
 scheduler:
-  interval: 5   
+  interval: 5
 eventstores:
   checkins_url:   http://storage:8090/library/check-ins
   borrowings_url: http://storage:8090/library/borrowings

@@ -1,0 +1,2 @@
+[acit3855vm]
+lisu-acit3855.westcentralus.cloudapp.azure.com ansible_user=lisu ansible_ssh_private_key_file=~/Desktop/acit3855_key.pem

@@ -1,0 +1,47 @@
+---
+- name: Deploy ACIT3855 services to cloud VM
+  hosts: acit3855vm
+  become: yes
+
+  vars:
+    app_dir: /home/lisu/acit3855
+
+  tasks:
+    - name: Ensure git is installed
+      apt:
+        name: git
+        state: present
+        update_cache: yes
+
+    - name: Ensure docker service running
+      service:
+        name: docker
+        state: started
+        enabled: yes
+
+    - name: Pull latest repo
+      become: false
+      git:
+        repo: "git@github.com:lisu0116/acit3855.git"
+        dest: "{{ app_dir }}"
+        version: main
+        force: yes
+        accept_hostkey: yes
+
+    - name: Install docker compose plugin (if needed)
+      apt:
+        name: docker-compose-plugin
+        state: present
+
+    - name: Run docker compose up
+      command: docker compose up -d
+      args:
+        chdir: "{{ app_dir }}"
+
+    - name: Check running containers
+      command: docker ps
+      register: docker_ps
+
+    - name: Print docker ps output
+      debug:
+        var: docker_ps.stdout_lines

@@ -67,6 +67,8 @@ services:
       context: ./processing
       dockerfile: Dockerfile
     container_name: processing
+    ports:
+      - "8100:8100"
     volumes:
       - ./config/processing:/config/processing
       - ./logs/processing:/logs/processing
