@@ -1,0 +1,162 @@
+openapi: 3.0.3
+info:
+  title: Library Analyzer API
+  version: "1.0.0"
+  description: |
+    Analyzer service that reads events directly from the Kafka "events" topic
+    and exposes history and statistics endpoints.
+
+paths:
+  /library/check-ins/history:
+    get:
+      summary: Get a check-in event by index from Kafka history
+      operationId: app.get_checkin_event
+      description: >
+        Returns the N-th check-in event (0-based index) among all "checkin"
+        events currently stored in the Kafka topic.
+      parameters:
+        - name: index
+          in: query
+          required: true
+          description: Zero-based index of the check-in event
+          schema:
+            type: integer
+            minimum: 0
+      responses:
+        '200':
+          description: Event found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CheckIn'
+        '400':
+          description: Invalid index parameter
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '404':
+          description: No check-in event at this index
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+
+  /library/borrowings/history:
+    get:
+      summary: Get a borrowing event by index from Kafka history
+      operationId: app.get_borrowing_event
+      description: >
+        Returns the N-th borrowing event (0-based index) among all "borrowing"
+        events currently stored in the Kafka topic.
+      parameters:
+        - name: index
+          in: query
+          required: true
+          description: Zero-based index of the borrowing event
+          schema:
+            type: integer
+            minimum: 0
+      responses:
+        '200':
+          description: Event found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Borrowing'
+        '400':
+          description: Invalid index parameter
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '404':
+          description: No borrowing event at this index
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+
+  /stats:
+    get:
+      summary: Get statistics about events in Kafka
+      operationId: app.get_stats
+      description: >
+        Returns the number of check-in and borrowing events currently present
+        in the Kafka "events" topic.
+      responses:
+        '200':
+          description: Statistics successfully returned
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Stats'
+
+components:
+  schemas:
+    CheckIn:
+      type: object
+      required:
+        - library_id
+        - library_name
+        - entrance_id
+        - entry_count
+        - exit_count
+        - interval_start
+        - interval_end
+        - batch_timestamp
+        - trace_id
+      properties:
+        library_id:      { type: string }
+        library_name:    { type: string }
+        entrance_id:     { type: string }
+        entry_count:     { type: integer }
+        exit_count:      { type: integer }
+        interval_start:  { type: string, format: date-time }
+        interval_end:    { type: string, format: date-time }
+        batch_timestamp: { type: string, format: date-time }
+        trace_id:        { type: string }
+
+    Borrowing:
+      type: object
+      required:
+        - library_id
+        - library_name
+        - book_id
+        - genre
+        - department
+        - borrowed_at
+        - borrow_duration_days
+        - batch_timestamp
+        - trace_id
+      properties:
+        library_id:           { type: string }
+        library_name:         { type: string }
+        book_id:              { type: string }
+        genre:                { type: string }
+        department:           { type: string }
+        borrowed_at:          { type: string, format: date-time }
+        returned_at:          { type: string, format: date-time, nullable: true }
+        borrow_duration_days: { type: integer }
+        batch_timestamp:      { type: string, format: date-time }
+        trace_id:             { type: string }
+
+    Stats:
+      type: object
+      required:
+        - num_checkins
+        - num_borrowings
+      properties:
+        num_checkins:
+          type: integer
+          example: 10
+        num_borrowings:
+          type: integer
+          example: 15
+
+    Error:
+      type: object
+      properties:
+        message:
+          type: string
+          example: "No event at this index"

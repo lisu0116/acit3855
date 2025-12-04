@@ -1,0 +1,41 @@
+openapi: 3.0.3
+info:
+  title: Stats API
+  version: "1.0.0"
+  description: Provides event statistics for library system
+paths:
+  /stats:
+    get:
+      summary: Gets the event stats
+      operationId: app.get_stats
+      description: Gets cumulative and numeric stats
+      responses:
+        '200':
+          description: Successfully returned a stats object
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ReadingStats'
+        '404':
+          description: Statistics do not exist
+          content:
+            application/json:
+              schema:
+                type: object
+                properties: { message: { type: string } }
+components:
+  schemas:
+    ReadingStats:
+      type: object
+      required:
+        - total_checkins
+        - total_borrowings
+        - max_entry_count
+        - avg_borrow_duration_days
+        - last_updated
+      properties:
+        total_checkins: { type: integer, example: 203 }
+        total_borrowings: { type: integer, example: 200 }
+        max_entry_count: { type: integer, example: 180 }
+        avg_borrow_duration_days: { type: number, format: float, example: 6.4 }
+        last_updated: { type: string, format: date-time, example: "2025-02-05T12:39:16Z" }

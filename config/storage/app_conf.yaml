@@ -1,0 +1,12 @@
+version: 1
+datastore:
+  user: lisu
+  password: "000423"
+  hostname: db
+  port: 3306     
+  db: acit3855
+  
+events:
+  hostname: kafka
+  port: 9092
+  topic: events

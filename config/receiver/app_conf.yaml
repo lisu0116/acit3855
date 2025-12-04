@@ -1,0 +1,12 @@
+version: 1
+events:
+  hostname: kafka
+  port: 9092
+  topic: events
+
+database:
+  host: db
+  port: 3306     
+  user: "lisu"
+  password: "000423"
+  name: "acit3855"

@@ -1,0 +1,89 @@
+version: "3.9"
+
+services:
+  zookeeper:
+    image: wurstmeister/zookeeper
+    container_name: zookeeper
+
+  kafka:
+    image: wurstmeister/kafka
+    container_name: kafka
+    ports:
+      - "9092:9092"
+    environment:
+      KAFKA_ADVERTISED_HOST_NAME: kafka
+      KAFKA_ZOOKEEPER_CONNECT: zookeeper:2181
+      KAFKA_LISTENERS: PLAINTEXT://0.0.0.0:9092
+      KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://kafka:9092
+    volumes:
+      - ./data/kafka:/kafka
+      - /var/run/docker.sock:/var/run/docker.sock
+    depends_on:
+      - zookeeper
+
+  db:
+    image: mysql:8.0.36
+    container_name: db
+    restart: always
+    environment:
+      MYSQL_RANDOM_ROOT_PASSWORD: 1
+      MYSQL_DATABASE: "acit3855"
+      MYSQL_USER: "lisu"
+      MYSQL_PASSWORD: "000423"
+    ports:
+      - "3307:3306"
+    volumes:
+      - ./data/database:/var/lib/mysql
+
+  storage:
+    build:
+      context: ./storage
+      dockerfile: Dockerfile
+    container_name: storage
+    ports:
+      - "8090:8090"
+    volumes:
+      - ./config/storage:/config/storage
+      - ./logs/storage:/logs/storage
+    depends_on:
+      - db
+      - kafka
+    
+  receiver:
+    build:
+      context: ./receiver
+      dockerfile: Dockerfile
+    container_name: receiver
+    ports:
+      - "8080:8080"
+    volumes:
+      - ./config/receiver:/config/receiver
+      - ./logs/receiver:/logs/receiver
+    depends_on:
+      - kafka
+
+  processing:
+    build:
+      context: ./processing
+      dockerfile: Dockerfile
+    container_name: processing
+    volumes:
+      - ./config/processing:/config/processing
+      - ./logs/processing:/logs/processing
+      - ./data:/data
+    depends_on:
+      - storage
+
+  analyzer:
+    build:
+      context: ./analyzer
+      dockerfile: Dockerfile
+    container_name: analyzer
+    ports:
+      - "8110:8110"
+    volumes:
+      - ./config/analyzer:/config/analyzer
+      - ./logs/analyzer:/logs/analyzer
+      - ./data:/data
+    depends_on:
+      - processing

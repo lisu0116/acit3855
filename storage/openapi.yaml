@@ -1,0 +1,74 @@
+openapi: 3.0.3
+info:
+  title: Library Storage API (Consumer)
+  version: "1.0.0"
+paths:
+  /library/check-ins:
+    get:
+      summary: gets check-in events by time window
+      operationId: app.get_checkins
+      parameters:
+        - name: start_timestamp
+          in: query
+          schema: { type: string, format: date-time }
+        - name: end_timestamp
+          in: query
+          schema: { type: string, format: date-time }
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/CheckIn'
+  /library/borrowings:
+    get:
+      summary: gets borrowing events by time window
+      operationId: app.get_borrowings
+      parameters:
+        - name: start_timestamp
+          in: query
+          schema: { type: string, format: date-time }
+        - name: end_timestamp
+          in: query
+          schema: { type: string, format: date-time }
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Borrowing'
+components:
+  schemas:
+    CheckIn:
+      type: object
+      properties:
+        library_id:        { type: string }
+        library_name:      { type: string }
+        entrance_id:       { type: string }
+        entry_count:       { type: integer }
+        exit_count:        { type: integer }
+        interval_start:    { type: string, format: date-time }
+        interval_end:      { type: string, format: date-time }
+        batch_timestamp:   { type: string, format: date-time }
+        trace_id:          { type: string }
+        date_created:      { type: string, format: date-time }
+    Borrowing:
+      type: object
+      properties:
+        library_id:              { type: string }
+        library_name:            { type: string }
+        book_id:                 { type: string }
+        genre:                   { type: string }
+        department:              { type: string }
+        borrowed_at:             { type: string, format: date-time }
+        returned_at:             { type: string, format: date-time, nullable: true }
+        borrow_duration_days:    { type: integer }
+        batch_timestamp:         { type: string, format: date-time }
+        trace_id:                { type: string }
+        date_created:            { type: string, format: date-time }

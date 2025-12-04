@@ -1,0 +1,78 @@
+openapi: 3.0.3
+info:
+  title: Library Receiver API
+  version: "1.0.0"
+paths:
+  /library/check-ins:
+    post:
+      summary: Receive a check-in/out event
+      operationId: app.receive_checkin
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CheckIn'
+      responses:
+        '201':
+          description: accepted and published
+  /library/borrowings:
+    post:
+      summary: Receive a borrowing/return event
+      operationId: app.receive_borrowing
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Borrowing'
+      responses:
+        '201':
+          description: accepted and published
+components:
+  schemas:
+    CheckIn:
+      type: object
+      required:
+        - library_id
+        - library_name
+        - entrance_id
+        - entry_count
+        - exit_count
+        - interval_start
+        - interval_end
+        - batch_timestamp
+        - trace_id
+      properties:
+        library_id:        { type: string }
+        library_name:      { type: string }
+        entrance_id:       { type: string }
+        entry_count:       { type: integer }
+        exit_count:        { type: integer }
+        interval_start:    { type: string, format: date-time }
+        interval_end:      { type: string, format: date-time }
+        batch_timestamp:   { type: string, format: date-time }
+        trace_id:          { type: string }
+    Borrowing:
+      type: object
+      required:
+        - library_id
+        - library_name
+        - book_id
+        - genre
+        - department
+        - borrowed_at
+        - borrow_duration_days
+        - batch_timestamp
+        - trace_id
+      properties:
+        library_id:              { type: string }
+        library_name:            { type: string }
+        book_id:                 { type: string }
+        genre:                   { type: string }
+        department:              { type: string }
+        borrowed_at:             { type: string, format: date-time }
+        returned_at:             { type: string, format: date-time, nullable: true }
+        borrow_duration_days:    { type: integer }
+        batch_timestamp:         { type: string, format: date-time }
+        trace_id:                { type: string }

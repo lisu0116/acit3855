@@ -1,0 +1,16 @@
+version: 1
+
+datastore:
+  filename: /data/processing/data.json
+
+scheduler:
+  interval: 5
+
+eventstores:
+  checkins_url:   http://storage:8090/library/check-ins
+  borrowings_url: http://storage:8090/library/borrowings
+
+events:
+  hostname: kafka
+  port: 9092
+  topic: events

@@ -1,0 +1,33 @@
+# Python
+__pycache__/
+*.py[cod]
+*.pyo
+*.pyd
+.venv/
+venv/
+
+# Virtual env or local tools
+.env
+*.sqlite3
+
+# IDE / Editor
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# Logs & data 
+logs/
+*/logs/
+data/
+*/data/
+*.log
+
+# Docker junk
+docker-data/
+docker-volume-*/
+
+# Prod configs 
+*prod*.yaml
+*_prod.yaml
+*production*.yaml
