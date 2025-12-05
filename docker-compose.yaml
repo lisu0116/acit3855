@@ -89,3 +89,14 @@ services:
       - ./data:/data
     depends_on:
       - processing
+
+  dashboard:
+    build:
+      context: ./dashboard
+      dockerfile: Dockerfile
+    ports:
+      - "8088:80"
+    depends_on:
+      - processing
+      - analyzer
+

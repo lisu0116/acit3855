@@ -31,3 +31,7 @@ docker-volume-*/
 *prod*.yaml
 *_prod.yaml
 *production*.yaml
+
+# Macbook
+.DS_Store
+receiver/.DS_Store

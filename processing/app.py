@@ -4,6 +4,8 @@ import json, os, logging, logging.config, yaml
 from datetime import datetime, timezone
 from apscheduler.schedulers.background import BackgroundScheduler
 import httpx
+from connexion.middleware import MiddlewarePosition
+from starlette.middleware.cors import CORSMiddleware
 
 with open('/config/processing/log_conf.yaml', 'r') as f:
     logging.config.dictConfig(yaml.safe_load(f))
@@ -104,6 +106,15 @@ def get_stats():
 
 app = connexion.FlaskApp(__name__, specification_dir='')
 app.add_api("openapi.yaml", strict_validation=True, validate_responses=True)
+
+app.add_middleware(
+    CORSMiddleware,
+    position=MiddlewarePosition.BEFORE_EXCEPTION,
+    allow_origins=["*"],      
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
 
 if __name__ == "__main__":
     init_scheduler()
