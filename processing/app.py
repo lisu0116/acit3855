@@ -74,13 +74,7 @@ def populate_stats():
         n0  += 1
     stats["avg_borrow_duration_days"] = avg0
     stats["avg_borrow_duration_count"] = n0
-
-    latest_times = []
-    if data1:
-        latest_times += [ev["batch_timestamp"] for ev in data1]
-    if data2:
-        latest_times += [ev["batch_timestamp"] for ev in data2]
-    stats["last_updated"] = max(latest_times) if latest_times else end_iso
+    stats["last_updated"] = end_iso
 
     _save_stats(stats)
     logger.debug(f"Updated stats: {stats}")
