@@ -29,15 +29,17 @@ def _publish_event(body: dict, event_type: str):
     logger.debug(f"Producing message to Kafka: {msg_str}")
     producer.produce(msg_str.encode('utf-8'))
 
-
 def receive_checkin(body):
     _publish_event(body, "checkin")
     return NoContent, 201
 
-
 def receive_borrowing(body):
     _publish_event(body, "borrowing")
     return NoContent, 201
+
+def get_check(body):
+    logger.info("GET /check")
+    return {"message": "Receiver service is running"}, 200
 
 app = connexion.FlaskApp(__name__, specification_dir='')
 app.add_api('openapi.yaml', strict_validation=True, validate_responses=False)
