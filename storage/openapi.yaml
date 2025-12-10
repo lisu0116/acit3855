@@ -43,6 +43,19 @@ paths:
                 type: array
                 items:
                   $ref: '#/components/schemas/Borrowing'
+
+  /stats:
+    get:
+      summary: gets the events stats
+      operationId: app.get_event_stats
+      description: gets the stats of the stored events
+      responses:
+        '200':
+          description: Sucessfully returned the storage stats
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Stats'
 components:
   schemas:
     CheckIn:
@@ -72,3 +85,15 @@ components:
         batch_timestamp:         { type: string, format: date-time }
         trace_id:                { type: string }
         date_created:            { type: string, format: date-time }
+
+    Stats:
+      required:
+        - num_checkins
+        - num_borrowings
+      properties:
+        num_checkins:
+          type: integer
+          example: 100
+        num_borrowings:
+          type: integer
+          example: 100

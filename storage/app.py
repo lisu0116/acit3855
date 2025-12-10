@@ -202,6 +202,16 @@ def get_borrowings(session, start_timestamp=None, end_timestamp=None):
     logger.info(f"Query borrowings: found {len(rows)} between {start} and {end}")
     return [r.to_dict() for r in rows], 200
 
+@use_db_session
+def get_event_stats(session):
+    logger.info("GET /stats")
+    checkin_count = session.query(CheckIn).count()
+    borrowing_count = session.query(Borrowing).count() 
+    return {
+        "checkin_count": checkin_count,
+        "borrowing_count": borrowing_count
+    }, 200
+
 app = connexion.FlaskApp(__name__, specification_dir='')
 app.add_api('openapi.yaml', strict_validation=True, validate_responses=False)
 

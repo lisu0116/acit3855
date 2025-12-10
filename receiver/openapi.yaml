@@ -29,6 +29,23 @@ paths:
       responses:
         '201':
           description: accepted and published
+
+  /check:
+    get:
+      summary: checks the health of the receiver
+      operationId: app.get_check
+      description: service is healthy if this service returns a response
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status_datetime:
+                    type: string
+                    example: 2025-12-12 9:35:34
 components:
   schemas:
     CheckIn:
