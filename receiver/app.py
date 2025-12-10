@@ -37,7 +37,7 @@ def receive_borrowing(body):
     _publish_event(body, "borrowing")
     return NoContent, 201
 
-def get_check(body):
+def get_check():
     logger.info("GET /check")
     return {"message": "Receiver service is running"}, 200
 
